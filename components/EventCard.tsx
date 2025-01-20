@@ -24,7 +24,7 @@ const EventCard = ({ eventId }: { eventId: Id<"events"> }) => {
   const { user } = useUser();
   const router = useRouter();
   const event = useQuery(api.events.getById, { eventId });
-  const avaibility = useQuery(api.events.getEventAvaibility, { eventId });
+  const avaibility = useQuery(api.events.getEventAvailability, { eventId });
 
   // checking is the signed in user has a ticket
   const userTicket = useQuery(api.tickets.getUserTicketForEvent, {

@@ -1,61 +1,59 @@
-'use client'
+"use client";
 
-import { useRouter } from "next/navigation"
-import { useUser } from "@clerk/clerk-react"
-import { useQuery } from "convex/react"
-import { api } from "@/convex/_generated/api"
-import { Id } from "@/convex/_generated/dataModel"
-import { useState, useEffect } from "react"
-import { Ticket } from "lucide-react"
-import ReleaseTicket from "./ReleaseTicket"
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/clerk-react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useState, useEffect } from "react";
+import { Ticket } from "lucide-react";
+import ReleaseTicket from "./ReleaseTicket";
 
-const PurchaseTicket = ({eventId}: {eventId: Id<'events'>}) => {
-  const router = useRouter()
-  const {user} = useUser()
+const PurchaseTicket = ({ eventId }: { eventId: Id<"events"> }) => {
+  const router = useRouter();
+  const { user } = useUser();
   const queuePosition = useQuery(api.waitingList.getQueuePosition, {
     eventId,
-    userId: user?.id ?? ''
-  })
+    userId: user?.id ?? "",
+  });
 
-  const [timeRemaining, setTimeRemaining] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [timeRemaining, setTimeRemaining] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const offerExpiresAt = queuePosition?.offerExpiresAt ?? 0
-  const isExpired = Date.now() > offerExpiresAt
+  const offerExpiresAt = queuePosition?.offerExpiresAt ?? 0;
+  const isExpired = Date.now() > offerExpiresAt;
 
-  useEffect(()=>{
+  useEffect(() => {
     const calculateTimeRemaining = () => {
-      if(isExpired){
-        setTimeRemaining('Expired')
-        return
+      if (isExpired) {
+        setTimeRemaining("Expired");
+        return;
       }
 
-      const diff = offerExpiresAt - Date.now()
-      const minutes = Math.floor(diff / 1000 / 60)
-      const seconds = Math.floor((diff / 1000) % 60)
+      const diff = offerExpiresAt - Date.now();
+      const minutes = Math.floor(diff / 1000 / 60);
+      const seconds = Math.floor((diff / 1000) % 60);
 
-      if(minutes > 0){
+      if (minutes > 0) {
         setTimeRemaining(
-          `${minutes} minutes${minutes === 1 ? '' : 's'} ${seconds} second${seconds === 1 ? '' : 's'}`
-        )
+          `${minutes} minutes${minutes === 1 ? "" : "s"} ${seconds} second${seconds === 1 ? "" : "s"}`,
+        );
       } else {
-        setTimeRemaining(`${seconds} second${seconds === 1 ? '' : 's'}`)
+        setTimeRemaining(`${seconds} second${seconds === 1 ? "" : "s"}`);
       }
-    }
+    };
 
-    calculateTimeRemaining()
-    const interval = setInterval(calculateTimeRemaining, 1000)
-    return () => clearInterval(interval)
-  }, [offerExpiresAt, isExpired])
+    calculateTimeRemaining();
+    const interval = setInterval(calculateTimeRemaining, 1000);
+    return () => clearInterval(interval);
+  }, [offerExpiresAt, isExpired]);
 
   // create stripe checkout
 
-  const handlePurchase = async () => {
+  const handlePurchase = async () => {};
 
-  }
-
-  if(!user || !queuePosition || queuePosition.status !== 'offered'){
-    return null
+  if (!user || !queuePosition || queuePosition.status !== "offered") {
+    return null;
   }
 
   return (
@@ -100,6 +98,6 @@ const PurchaseTicket = ({eventId}: {eventId: Id<'events'>}) => {
       </div>
     </div>
   );
-}
+};
 
-export default PurchaseTicket
+export default PurchaseTicket;
